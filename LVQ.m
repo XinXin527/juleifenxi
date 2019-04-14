@@ -1,0 +1,114 @@
+data=normrnd(0,1,2,1000);
+data1=data;
+data2=data;
+p1=[(sqrt(2))/2
+    (sqrt(2))/2];
+p2=[-(sqrt(2))/2
+     (sqrt(2))/2];
+p3=[-(sqrt(2))/2
+     (sqrt(2))/2];
+p4=[-(sqrt(2))/2
+    -(sqrt(2))/2];
+A=[p1,p2]*[3,0;0,1];
+A1=[p3,p4]*[3,0;0,1];
+yy=A*data;
+yy1=A*data1;
+yy2=A1*data2;
+yy1(1,:)=yy1(1,:)+16;
+yy1(2,:)=yy1(2,:)+7;
+yy2(1,:)=yy2(1,:)+7;
+yy2(2,:)=yy2(2,:)+5;
+YY1=zeros(3,1000);
+YY2=zeros(3,1000);
+YY3=zeros(3,1000);
+YY1(1,:)=yy(1,:);
+YY1(2,:)=yy(2,:);
+YY1(3,:)=-1;
+YY2(1,:)=yy1(1,:);
+YY2(2,:)=yy1(2,:);
+YY2(3,:)=0;
+YY3(1,:)=yy2(1,:);
+YY3(2,:)=yy2(2,:);
+YY3(3,:)=1;
+yita=0.5;
+yyall=[yy,yy1,yy2];
+YYall=[YY1,YY2,YY3];
+initial=zeros(3,3);
+initial(:,1)=YYall(:,500);
+initial(:,2)=YYall(:,1000);
+initial(:,3)=YYall(:,3000);
+initial0=zeros(2,3);
+initial0(:,1)=yyall(:,500);
+initial0(:,2)=yyall(:,1000);
+initial0(:,3)=yyall(:,3000);
+for a=1:1:4
+    A=randsample(3000,1,true);
+    B=YYall(:,A);
+    b=yyall(:,A);
+    if((norm(initial0(:,1)-b(:,1))<norm(initial0(:,2)-b(:,1)))&(norm(initial0(:,1)-b(:,1))<norm(initial0(:,3)-b(:,1))))
+            if(initial(3,1)==B(3,1))
+                initial(1,1)=initial(1,1)+yita*(B(1,1)-initial(1,1));
+                initial(2,1)=initial(2,1)+yita*(B(2,1)-initial(2,1));
+                initial0(1,1)=initial0(1,1)+yita*(B(1,1)-initial0(1,1));
+                initial0(2,1)=initial0(2,1)+yita*(B(2,1)-initial0(2,1));
+            else
+                initial(1,1)=initial(1,1)-yita*(B(1,1)-initial(1,1));
+                initial(2,1)=initial(2,1)-yita*(B(2,1)-initial(2,1));
+                initial0(1,1)=initial0(1,1)-yita*(B(1,1)-initial0(1,1));
+                initial0(2,1)=initial0(2,1)-yita*(B(2,1)-initial0(2,1));
+            end
+    end
+    if((norm(initial0(:,2)-b(:,1))<norm(initial0(:,1)-b(:,1)))&(norm(initial0(:,2)-b(:,1))<norm(initial0(:,3)-b(:,1))))
+            if(initial(3,2)==B(3,1))
+                initial(1,2)=initial(1,2)+yita*(B(1,1)-initial(1,2));
+                initial(2,2)=initial(2,2)+yita*(B(2,1)-initial(2,2));
+                initial0(1,2)=initial0(1,2)+yita*(B(1,1)-initial0(1,2));
+                initial0(2,2)=initial0(2,2)+yita*(B(2,1)-initial0(2,2));
+            else
+                initial(1,2)=initial(1,2)-yita*(B(1,1)-initial(1,2));
+                initial(2,2)=initial(2,2)-yita*(B(2,1)-initial(2,2));
+                initial0(1,2)=initial0(1,2)-yita*(B(1,1)-initial0(1,2));
+                initial0(2,2)=initial0(2,2)-yita*(B(2,1)-initial0(2,2));
+            end
+    end
+    if((norm(initial0(:,3)-b(:,1))<=norm(initial0(:,1)-b(:,1)))&(norm(initial0(:,3)-b(:,1))<=norm(initial0(:,2)-b(:,1))))
+            if(initial(3,3)==B(3,1))
+                initial(1,3)=initial(1,3)+yita*(B(1,1)-initial(1,3));
+                initial(2,3)=initial(2,3)+yita*(B(2,1)-initial(2,3));
+                initial0(1,3)=initial0(1,3)+yita*(B(1,1)-initial0(1,3));
+                initial0(2,3)=initial0(2,3)+yita*(B(2,1)-initial0(2,3));
+            else
+                initial(1,3)=initial(1,3)-yita*(B(1,1)-initial(1,3));
+                initial(2,3)=initial(2,3)-yita*(B(2,1)-initial(2,3));
+                initial0(1,3)=initial0(1,3)-yita*(B(1,1)-initial0(1,3));
+                initial0(2,3)=initial0(2,3)-yita*(B(2,1)-initial0(2,3));
+            end
+    end
+end
+A1=[];
+A2=[];
+A3=[];
+A4=[];
+A5=[];
+A6=[];
+for i=1:1:3000
+        if((norm(initial0(:,1)-yyall(:,i))<norm(initial0(:,2)-yyall(:,i)))&(norm(initial0(:,1)-yyall(:,i))<norm(initial0(:,3)-yyall(:,i))))
+            A1=[A1;yyall(1,i)];
+            A2=[A2;yyall(2,i)];
+        end
+        if((norm(initial0(:,2)-yyall(:,i))<norm(initial0(:,3)-yyall(:,i)))&(norm(initial0(:,2)-yyall(:,i))<norm(initial0(:,1)-yyall(:,i))))
+            A3=[A3;yyall(1,i)];
+            A4=[A4;yyall(2,i)];
+        end
+        if((norm(initial0(:,3)-yyall(:,i))<=norm(initial0(:,1)-yyall(:,i)))&(norm(initial0(:,3)-yyall(:,i))<norm(initial0(:,2)-yyall(:,i))))
+            A5=[A5;yyall(1,i)];
+            A6=[A6;yyall(2,i)];
+        end
+end
+plot(A1,A2,'ro');
+hold on;
+plot(A3,A4,'*');
+hold on;
+plot(A5,A6,'.');
+hold on;
+plot(initial0(1,:),initial0(2,:),'ko');
